@@ -1,6 +1,6 @@
 {
     "name": "imaginaryjs",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "A JavaScript library for complex number operations.",
     "main": "imaginary.js",
     "type": "module",
@@ -9,5 +9,8 @@
     },
     "keywords": ["math", "complex-numbers", "euler", "algebra", "trigonometry", "utilities", "imaginaryjs"],
     "author": "CarlosRTX",
-    "license": "MIT"
+    "license": "MIT",
+    "repository": {
+        "url": "https://github.com/carlos-rtx/imaginaryjs"
+    }
 }
