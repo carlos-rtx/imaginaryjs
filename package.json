@@ -1,0 +1,13 @@
+{
+    "name": "imaginaryjs",
+    "version": "1.0.0",
+    "description": "A JavaScript library for complex number operations.",
+    "main": "imaginary.js",
+    "type": "module",
+    "scripts": {
+        "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+    },
+    "keywords": ["math", "complex-numbers", "euler", "algebra", "trigonometry", "utilities", "imaginaryjs"],
+    "author": "CarlosRTX",
+    "license": "MIT"
+}
