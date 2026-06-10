@@ -35,13 +35,13 @@ export default class ComplexNumber {
     return `${realPart} ${sign} ${imagValue}i`;
   }
   display() {
-    return this.toString(); 
+    return this.toString();
   }
   static parser(string) {
     const toProcess = string.trim().replace(/\s+/g, "");
-    const sanitizer = /^[\+\-\d\.i]+$/; 
-    const slicer = /^([+-]?\d+(?:\.\d+)?)?([+-]\d*(?:\.\d+)?)i$/; 
-    const onlyI = /^i$/; 
+    const sanitizer = /^[\+\-\d\.i]+$/;
+    const slicer = /^([+-]?\d+(?:\.\d+)?)?([+-]\d*(?:\.\d+)?)i$/;
+    const onlyI = /^i$/;
     if (
       !sanitizer.test(toProcess) ||
       (!slicer.test(toProcess) && !onlyI.test(toProcess))
@@ -65,6 +65,25 @@ export default class ComplexNumber {
       imaginaryPart = Number(imaginaryPartString);
     }
     return new ComplexNumber([realPart, imaginaryPart]);
+  }
+  static evaluate(string) {
+    //empecemos por aceptar cuatro operaciones posibles: suma, resta, multiplicación y división
+    const toProcess = string.trim().replace(/\0*\s+/g, "");
+    const sanitizer = /^[x\+\-\d\.\/\(\)\*i]+$/;
+    //suma resta
+    const additionBlueprint =
+      /^((\-?\d*(?:\.\d+)?)?([+-]?\d*(?:\.\d+)?)i)([\+\-])((\-?\d*(?:\.\d+)?)?([+-]?\d*(?:\.\d+)?)i)$/;
+    const secondAdditionBlueprint = /^[+-]i[+-][+-]i$/;
+    //multiplicación y división
+    const multiplicationBlueprint =
+      /^(?:\((\-?\d*(?:\.\d+)?)(([+-]?\d*(?:\.\d+)?)i?)\))([\*\/]?)(?:\((\-?\d*(?:\.\d+)?)(([+-]?\d*(?:\.\d+)?)i?)\))$/;
+    const preMultBlueprint = /^\((.+)\)([\*\/])\((.+)\)$/;
+    //sqrt 
+    const sqrtBlueprint = /^sqrt\(((\-?\d*(?:\.\d+)?)?([+-]?\d*(?:\.\d+)?)i)\)$/;
+    //sin, cos, tan
+    const trigBlueprint = /^(sin|cos|tan)\(((\-?\d*(?:\.\d+)?)?([+-]?\d*(?:\.\d+)?)i)\)$/;
+    console.log(toProcess);
+    console.log(preMultBlueprint.test(toProcess));
   }
   multiply(factors) {
     return factors.reduce((acc, factor) => {
@@ -115,13 +134,15 @@ export default class ComplexNumber {
     return new ComplexNumber([realPart, imaginaryPart]);
   }
   argument() {
-    //redundancia al maximo pero pa algo servirá
     return {
       rad: this.toPolar().rad,
       deg: this.toPolar().deg,
     };
   }
-  conjugate(int) {
+  modulus() {
+    return Math.sqrt(this.real ** 2 + this.imaginary ** 2);
+  }
+  conjugate() {
     //save(int) //esto va a explotar
     return new ComplexNumber([this.real, -this.imaginary]);
   }
@@ -177,4 +198,5 @@ export default class ComplexNumber {
     return new ComplexNumber([real, imaginary]);
   }
 }
-const z = new ComplexNumber([3, 4]);
+//console.log(ComplexNumber.evaluate("(4)*(5)")); //false
+//2k de tokens joder
