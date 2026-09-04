@@ -1,3 +1,4 @@
+import parser from './parser/parser_main.js';
 export default class ComplexNumber {
   constructor([real = 0, imaginary = 0] = [0, 0]) {
     if (typeof real !== "number") {
@@ -47,7 +48,7 @@ export default class ComplexNumber {
       (!slicer.test(toProcess) && !onlyI.test(toProcess))
     ) {
       throw new Error(
-        "Attempted invalid protocol execution: input string is not a valid complex number format, error code 0xBADINPUT", //lol
+        "Attempted invalid protocol execution: input string is not a valid complex number format, error code 0xBA78DD91", //lol
       );
     }
     if (onlyI.test(toProcess)) {
@@ -65,25 +66,6 @@ export default class ComplexNumber {
       imaginaryPart = Number(imaginaryPartString);
     }
     return new ComplexNumber([realPart, imaginaryPart]);
-  }
-  static evaluate(string) {
-    //empecemos por aceptar cuatro operaciones posibles: suma, resta, multiplicación y división
-    const toProcess = string.trim().replace(/\0*\s+/g, "");
-    const sanitizer = /^[x\+\-\d\.\/\(\)\*i]+$/;
-    //suma resta
-    const additionBlueprint =
-      /^((\-?\d*(?:\.\d+)?)?([+-]?\d*(?:\.\d+)?)i)([\+\-])((\-?\d*(?:\.\d+)?)?([+-]?\d*(?:\.\d+)?)i)$/;
-    const secondAdditionBlueprint = /^[+-]i[+-][+-]i$/;
-    //multiplicación y división
-    const multiplicationBlueprint =
-      /^(?:\((\-?\d*(?:\.\d+)?)(([+-]?\d*(?:\.\d+)?)i?)\))([\*\/]?)(?:\((\-?\d*(?:\.\d+)?)(([+-]?\d*(?:\.\d+)?)i?)\))$/;
-    const preMultBlueprint = /^\((.+)\)([\*\/])\((.+)\)$/;
-    //sqrt 
-    const sqrtBlueprint = /^sqrt\(((\-?\d*(?:\.\d+)?)?([+-]?\d*(?:\.\d+)?)i)\)$/;
-    //sin, cos, tan
-    const trigBlueprint = /^(sin|cos|tan)\(((\-?\d*(?:\.\d+)?)?([+-]?\d*(?:\.\d+)?)i)\)$/;
-    console.log(toProcess);
-    console.log(preMultBlueprint.test(toProcess));
   }
   multiply(factors) {
     return factors.reduce((acc, factor) => {
@@ -125,14 +107,26 @@ export default class ComplexNumber {
       return new ComplexNumber([realPart, imaginaryPart]);
     }, this); //oh shit here we go
   }
-  sqrt() {
-    //y esto se me hacia dificil
-    const modulus = Math.sqrt(this.real ** 2 + this.imaginary ** 2);
-    const realPart = Math.sqrt((modulus + this.real) / 2);
-    const imaginaryPart =
-      Math.sign(this.imaginary) * Math.sqrt((modulus - this.real) / 2);
-    return new ComplexNumber([realPart, imaginaryPart]);
+  sqrt(output = 'positive') {
+    const normalizedOutput = output.trim().replace(/\s+/g, "");
+    if (!['positive', 'negative', 'both'].includes(normalizedOutput)) {
+  throw new Error("Invalid sqrt output type");
+}
+
+  const modulus = Math.sqrt(this.real ** 2 + this.imaginary ** 2);
+  const realPart = Math.sqrt((modulus + this.real) / 2);
+  const imaginaryPart =
+    Math.sign(this.imaginary) *
+    Math.sqrt((modulus - this.real) / 2);
+  if (normalizedOutput === 'negative') {
+    return new ComplexNumber([-realPart, -imaginaryPart]);
   }
+  if (normalizedOutput === 'both') {
+    return [this.sqrt('positive'), this.sqrt('negative')];
+  }
+
+  return new ComplexNumber([realPart, imaginaryPart]);
+}
   argument() {
     return {
       rad: this.toPolar().rad,
@@ -198,5 +192,4 @@ export default class ComplexNumber {
     return new ComplexNumber([real, imaginary]);
   }
 }
-//console.log(ComplexNumber.evaluate("(4)*(5)")); //false
-//2k de tokens joder
+//dependenciasmaxxing bro
